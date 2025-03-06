@@ -9,12 +9,14 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:extension.getFullDocumentContent"
+  ],
   "main": "./extension.js",
   "contributes": {
     "commands": [{
-      "command": "codetrans.helloWorld",
-      "title": "Hello World"
+      "command": "extension.getFullDocumentContent",
+      "title": "code translation"
     }]
   },
   "scripts": {
