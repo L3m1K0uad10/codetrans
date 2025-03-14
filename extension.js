@@ -8,22 +8,43 @@ const vscode = require('vscode');
 /**
  * @param {vscode.ExtensionContext} context
  */
-function activate(context) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
+async function fetchData(fileContent, fileName, editor) {
+	try {
+		const data = {
+			file_name: fileName,  
+			language: "python",
+			file_content: fileContent
+		};
+	  
+		const response = await fetch('http://127.0.0.1:8000/processing/translate/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',  // Tell the server we're sending JSON
+			},
+			body: JSON.stringify(data),  // Convert the data object to a JSON string
+		});
+
+		if(!response.ok) {
+			throw new Error("Could not fetch resource")
+		}
+
+		const responseData = await response.json();
+    	//console.log("Translated code:", responseData.translated_code); 
+
+		// Now update the opened file content with the translated code
+        updateDocument(editor, responseData.translated_code);
+	}catch(error) {
+		console.error(error);
+	}
+}
+
+function activate(context) {
 	console.log('Your extension "codetrans" is now active!');
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
 	// The commandId parameter must match the command field in package.json
-
-	/* 1- const disposable = vscode.commands.registerCommand('codetrans.helloWorld', function () {
-		// The code you place here will be executed every time your command is executed
-
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from codetrans!');
-	}); */
 
 	// Register a command to retrieve the full document content
 	// my extension.getFullDocumentContent should match the command field in package.json
@@ -34,10 +55,13 @@ function activate(context) {
 		if (editor) {
 			// Retrieve the full content of the active document
 			const document = editor.document;
+			const fileName = document.fileName; 
 			const fullContent = getFullDocumentContent(document);
 			
 			// Display the content (or you can process it as needed)
-			console.log("Full document content:", fullContent);
+			console.log("Full document content printed");
+
+			fetchData(fullContent, fileName, editor);
 
 			// Optionally display it in an information message
 			vscode.window.showInformationMessage("Full document content retrieved.");
@@ -46,9 +70,6 @@ function activate(context) {
 
 	context.subscriptions.push(disposable);
 }
-
-/* 2- // This method is called when your extension is deactivated
-function deactivate() {} */
 
 function getFullDocumentContent(document) {
     return document.getText(); // Retrieves the entire content of the document as a string
@@ -59,6 +80,7 @@ module.exports = {
 	deactivate
 }
 
+ // This method is called when your extension is deactivated
 function deactivate() {}
 
 
