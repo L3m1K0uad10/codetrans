@@ -9,12 +9,16 @@ const vscode = require('vscode');
  * @param {vscode.ExtensionContext} context
  */
 
-async function fetchData(fileContent, fileName, editor) {
+let translatedContent = false;
+let originalContent = "";
+
+async function fetchData(fileContent, fileName, editor, level = "Complete") {
 	try {
 		const data = {
 			file_name: fileName,  
 			language: "python",
-			file_content: fileContent
+			file_content: fileContent,
+			level: level
 		};
 	  
 		const response = await fetch('http://127.0.0.1:8000/processing/translate/', {
@@ -34,6 +38,7 @@ async function fetchData(fileContent, fileName, editor) {
 
 		// Now update the opened file content with the translated code
         updateDocument(editor, responseData.translated_code);
+		translatedContent = true
 	}catch(error) {
 		console.error(error);
 	}
@@ -69,16 +74,42 @@ function activate(context) {
 			const document = editor.document;
 			const fileName = document.fileName; 
 			const fullContent = getFullDocumentContent(document);
+
+			if (!translatedContent) {
+                originalContent = fullContent;  // Saving original content to reset later
+            }
 			
 			// Display the content (or you can process it as needed)
-			console.log("Full document content printed");
-
-			fetchData(fullContent, fileName, editor);
+			//console.log("Full document content printed");
 
 			// Optionally display it in an information message
-			vscode.window.showInformationMessage("Full document content retrieved.");
+			//vscode.window.showInformationMessage("Full document content retrieved.");
+			vscode.window.showInformationMessage('Code translation: trigger a button', 'Complete', 'Partial', 'Reset')
+            .then(selection => {
+                if (selection !== undefined) {
+                    // Log the selected action
+                    console.log(selection);
+
+                    // Handle the selection
+                    if (selection === "Complete") {
+                        fetchData(fullContent, fileName, editor);
+						vscode.window.showInformationMessage("Complete translation is performing...");
+                    } else if (selection === "Partial") {
+                        fetchData(fullContent, fileName, editor, "Partial"); // partial means only comments
+						vscode.window.showInformationMessage("Partial translation is performing...");
+                    } else {
+						if(translatedContent) {
+							updateDocument(editor, originalContent);
+							translatedContent = false
+							vscode.window.showInformationMessage("Reset file");
+						}
+                        //console.log("Reset the opened file content back to its original language.");
+                    }
+                }
+            });
 		}
 	});
+	
 
 	context.subscriptions.push(disposable);
 }

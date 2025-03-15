@@ -9,9 +9,7 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onCommand:extension.getFullDocumentContent"
-  ],
+  "activationEvents": [],
   "main": "./extension.js",
   "contributes": {
     "commands": [{
