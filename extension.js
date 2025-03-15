@@ -39,6 +39,18 @@ async function fetchData(fileContent, fileName, editor) {
 	}
 }
 
+function updateDocument(editor, translatedCode) {
+    // starting an edit session to update the content of the editor
+    editor.edit(editBuilder => {
+        const fullRange = new vscode.Range(
+            editor.document.positionAt(0), 
+            editor.document.positionAt(editor.document.getText().length)
+        );
+        // replace the entire content with the translated code
+        editBuilder.replace(fullRange, translatedCode);
+    });
+}
+
 function activate(context) {
 	console.log('Your extension "codetrans" is now active!');
 
