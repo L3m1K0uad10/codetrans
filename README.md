@@ -29,4 +29,4 @@ Not deployed yet, so you'll have to run locally on your computer
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+GPL-3.0 license
