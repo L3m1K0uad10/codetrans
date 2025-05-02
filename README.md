@@ -10,8 +10,9 @@ Not deployed yet, so you'll have to run locally on your computer
 3 - open the codetrans backend project and run the backend 
 4 - open the codetrans extension project on vs code and debug it
 
-[codetrans backend](https://pip.pypa.io/en/stable/)
-[codetrans extension frontend](https://pip.pypa.io/en/stable/)
+[codetrans backend](https://github.com/L3m1K0uad10/codetrans-backend)
+
+[codetrans extension frontend](https://github.com/L3m1K0uad10/codetrans)
 
 ## Usage
 
