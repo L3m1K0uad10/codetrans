@@ -1,6 +1,6 @@
 # codetrans VS Code extension
 
-Codetrans is a vs Code extension, that basically translates token(comments, variables name and other user defined identifiers).It's actually support english-french version
+Codetrans is a vs Code extension, that basically translates token(comments, variables name and other user defined identifiers). It actually supports english-french version
 
 ## Installation
 
